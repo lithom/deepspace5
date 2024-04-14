@@ -1,0 +1,29 @@
+{
+  "BaseModelConfig": {
+    "type": "ExampleTransformerBaseModel",
+    "train": true,
+    "seq_length_in": 64,
+    "seq_length_out": 32,
+    "model_dim": 128,
+    "num_encoder_layers": 4,
+    "num_decoder_layers": 1,
+    "num_heads": 8,
+    "datafile": "MainChemistryData",
+    "datafile_smiles_input": "smiles_rand"
+  },
+  "OutputHeadConfig": {
+    "ExampleOutputHead": {
+      "type": "ExampleLinearOutputHead",
+      "train": true,
+      "num_layers": 2,
+      "loss": "rmsd",
+      "datafile": "MainChemistryData",
+      "datafile_dataset": "Dist"
+    }
+  },
+  "Data": {
+    "MainChemistryData": {
+      "file": "C:\\dev\\deepspace5\\data\\datasets\\dataset_s32_a.pickle"
+    }
+  }
+}
