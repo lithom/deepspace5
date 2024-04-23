@@ -18,12 +18,13 @@
       "num_layers": 2,
       "loss": "rmsd",
       "datafile": "MainChemistryData",
-      "datafile_dataset": "Dist"
+      "datafile_dataset": "dist_matrix",
+      "masked_dimensions": [0,1]
     }
   },
   "Data": {
     "MainChemistryData": {
-      "file": "C:\\dev\\deepspace5\\data\\datasets\\dataset_s32_a.pickle"
+      "file": "C:\\dev\\deepspace5\\data\\datasets\\dataset_SMALL_a1_s32.pickle"
     }
   }
 }

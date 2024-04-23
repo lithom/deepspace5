@@ -17,6 +17,9 @@ class OutputHeadConfiguration:
         """
         raise NotImplementedError("This method should be implemented by subclasses.")
 
+    def set_global_data(self, head_name, global_data):
+        raise NotImplementedError("This method should be implemented by subclasses.")
+
     def get_data_length(self):
         raise NotImplementedError("This method should be implemented by subclasses.")
 
@@ -45,6 +48,8 @@ class OutputHeadConfiguration:
 class ExampleHead(OutputHeadConfiguration):
     def __init__(self):
         super().__init__()
+        self.head_name = None
+        self.global_data = None
 
     def load_config(self, config):
         print('load config')
@@ -53,6 +58,13 @@ class ExampleHead(OutputHeadConfiguration):
         # Example: Create a simple linear layer as the module
         module = torch.nn.Linear(256, 10)  # Example dimensions
         return module
+
+    def set_global_data(self, head_name, global_data):
+        self.head_name = head_name
+        self.global_data = global_data
+
+    def get_data_sample(self, idx):
+        return torch.randn((24))
 
     def get_data_length(self):
         return 512
@@ -63,8 +75,6 @@ class ExampleHead(OutputHeadConfiguration):
         """
         return False
 
-    def create_data_sample(self):
-        return torch.randn((24))
 
     def compute_loss(self, output, target):
         # Example: Use CrossEntropyLoss for classification

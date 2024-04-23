@@ -16,5 +16,8 @@ class BaseModelConfiguration:
     def create_model(self):
         raise NotImplementedError("This method should be implemented by subclasses.")
 
-    def create_input_data_sample(self):
+    def set_global_data(self, global_data):
+        raise NotImplementedError("This method should be implemented by subclasses.")
+
+    def create_input_data_sample(self, idx):
         raise NotImplementedError("This method should be implemented by subclasses.")

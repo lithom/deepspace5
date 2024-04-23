@@ -10,18 +10,18 @@ class CombinedDataset(Dataset):
         self.datasets = datasets
         self.base_model_conf = base_model_conf
         self.output_heads = output_heads
-        self.length = min(head.get_length() for head in output_heads)
+        self.length = min([head.get_data_length() for head in output_heads])
 
     def __len__(self):
-        return self.length
+        return 200 #self.length
 
     def __getitem__(self, idx):
         """
         Fetch and combine samples from all output heads for the given index.
         """
         sample = {}
-        sample['base'] = {'in': self.base_model_conf.create_sample(idx, self.datasets)}
-        for name, output_head_conf in self.datasets.items():
-            sample[name] = output_head_conf.create_sample(idx, self.datasets)
+        sample['base'] = {'in': self.base_model_conf.create_input_data_sample(idx)}
+        for output_head_i in self.output_heads:
+            sample[output_head_i.head_name] = output_head_i.get_data_sample(idx)
 
         return sample

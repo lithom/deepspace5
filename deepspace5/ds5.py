@@ -91,23 +91,33 @@ def main_train(config_path):
     # Load global data
     data = load_global_data(config['Data'])
 
+    # Set data in base model
+    base_model.set_global_data(data)
+
     # Initialize and load output heads
     output_heads = []
     for head_name, head_config in config['OutputHeadConfig'].items():
-        head_class = output_head_registry[head_name]
+        head_class = output_head_registry[head_config['type']]
         head = head_class()
         head.load_config(head_config)
+        head.set_global_data(head_name,data)
         output_heads.append(head)
 
     # Create datasets
-    input_data_loader = DataLoader(base_model.create_input_data_sample(), batch_size=32, shuffle=True)
-    output_data_loader = DataLoader(CombinedDataset(*output_heads), batch_size=32, shuffle=True)
+    dataset = CombinedDataset(data,base_model,output_heads)
+
+    # Create DataLoader:
+    batch_size = 2
+    shuffle = True
+    data_loader = DataLoader(dataset, batch_size=batch_size, shuffle=shuffle)
 
     # Create optimizer
     optimizer = []
 
     # Example training loop
-    for (input_batch), output_batch in zip(input_data_loader, output_data_loader):
+    for xi in data_loader:
+        input_batch = xi
+        output_batch = xi
         model_output = base_model.create_model()(input_batch)
         losses = [head.compute_loss(model_output, output_batch[head_idx]['out']) for head_idx, head in enumerate(output_heads)]
         total_loss = sum(losses)
