@@ -10,10 +10,10 @@ class CombinedDataset(Dataset):
         self.datasets = datasets
         self.base_model_conf = base_model_conf
         self.output_heads = output_heads
-        self.length = min([head.get_data_length() for head in output_heads])
+        self.length = min([head['config'].get_data_length() for head in output_heads])
 
     def __len__(self):
-        return 200 #self.length
+        return self.length
 
     def __getitem__(self, idx):
         """
@@ -22,6 +22,6 @@ class CombinedDataset(Dataset):
         sample = {}
         sample['base'] = {'in': self.base_model_conf.create_input_data_sample(idx)}
         for output_head_i in self.output_heads:
-            sample[output_head_i.head_name] = output_head_i.get_data_sample(idx)
+            sample[output_head_i['config'].head_name] = output_head_i['config'].get_data_sample(idx)
 
         return sample

@@ -17,6 +17,28 @@ def pad_string_randomly(s, target_length=64, pad_char='y'):
     return padded_string
 
 
+
+element_to_class = {
+    'C': 0,
+    'N': 1,
+    'O': 2,
+    'F': 3,
+    'P': 4,
+    'S': 5,
+    'Cl': 6,
+    'Br': 7,
+    'I': 8,
+}
+
+# Function to convert organic atom element identifier string to integer class
+def convert_element_to_int(elements, padded_length):
+    # Convert strings to integers
+    integers = [element_to_class.get(element, 9) for element in elements]
+    # Pad the resulting list with zeros to size 32
+    padded_integers = integers + [0] * (padded_length - len(integers))
+    return padded_integers
+
+
 def create_atom_mask(tensor_shape, mask_lengths, masked_dimensions):
     # Create a tensor filled with ones
     mask = (torch.ones(tensor_shape,dtype=torch.int64))

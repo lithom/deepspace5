@@ -274,7 +274,7 @@ def process_smiles_list_parallel(smiles_file, output_file, num_atoms=32, max_smi
     # Read all SMILES strings from file
     smiles = read_smiles(smiles_file)
     # Limit the number of SMILES to 1000 for processing
-    smiles = smiles[200000:400000]
+    smiles = smiles[200000:220000]
 
     # Prepare arguments for processing
     args = [(smile, num_atoms, max_smiles_length) for smile in smiles]
@@ -322,4 +322,4 @@ def process_smiles_list(smiles_file, output_file, num_atoms=32, max_smiles_lengt
 if __name__ == '__main__':
     input_a = "C:\\datasets\\chembl_size90_input_smiles.csv"
     #process_smiles_list(input_a,"dataset_a.pickle",32,64,True)
-    process_smiles_list_parallel(input_a,"dataset_a_s16.pickle",16,32,True)
+    process_smiles_list_parallel(input_a,"dataset_a_s32.pickle",32,64,True)

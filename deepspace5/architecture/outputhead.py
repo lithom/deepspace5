@@ -17,7 +17,7 @@ class OutputHeadConfiguration:
         """
         raise NotImplementedError("This method should be implemented by subclasses.")
 
-    def set_global_data(self, head_name, global_data):
+    def set_global_data(self, head_name, device, global_data):
         raise NotImplementedError("This method should be implemented by subclasses.")
 
     def get_data_length(self):
@@ -42,8 +42,18 @@ class OutputHeadConfiguration:
         raise NotImplementedError("This method should be implemented by subclasses.")
 
 
+    def start_iteration(self):
+        """
+        Info call. Can be used e.g. to update internal counters, for collecting more detailed performance
+        metrics that can be shown at the end of an iteration.
+        """
 
-
+    def end_iteration(self, output_level: int):
+        """
+        Info call. Can be used e.g. to show additional internal performance metrics at the end of an iteration.
+        output_level: if zero, then there should be no output, values > zero should create output (more detailed with
+        increasing value)
+        """
 
 class ExampleHead(OutputHeadConfiguration):
     def __init__(self):

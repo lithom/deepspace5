@@ -13,7 +13,7 @@ class BaseModelConfiguration:
     def load_base_model_from_config(self, config):
         raise NotImplementedError("This method should be implemented by subclasses.")
 
-    def create_model(self):
+    def create_module(self):
         raise NotImplementedError("This method should be implemented by subclasses.")
 
     def set_global_data(self, global_data):

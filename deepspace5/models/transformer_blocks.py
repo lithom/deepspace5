@@ -89,7 +89,7 @@ class ExampleTransformerBaseModel(BaseModelConfiguration):
         self.smiles_vocab[self.padding_character] = 0
 
 
-    def create_model(self):
+    def create_module(self):
         return self.model
 
     def create_input_data_sample(self, idx: int):
@@ -97,9 +97,16 @@ class ExampleTransformerBaseModel(BaseModelConfiguration):
         smiles_raw = self.global_data[self.datafile]['Samples'][idx][self.datafile_smiles_input]
         smiles_raw_padded = pad_string_randomly(smiles_raw,self.config['seq_length_in'],pad_char=self.padding_character)
         smiles_encoded = torch.tensor(  [ self.smiles_vocab[ci] for ci in smiles_raw_padded ] )
-        sample = {}
-        sample["in"] = smiles_encoded
+        sample = smiles_encoded
         return sample
+        #sample = {}
+        #sample["in"] = smiles_encoded
+
+
+
+
+
+
 
 
 def register_models(basemodels, outputhead_models):
