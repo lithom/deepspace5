@@ -1,0 +1,1 @@
+# from basic_embeddings import SymmetryRankEmbeddingPart,PharmacophoreFlagsEmbeddingPart,AtomTypeEmbeddingPart, BondInfoEmbeddingPart, VertexDistanceEmbeddingPart, ApproximateDistanceEmbeddingPart,RingStatusEmbeddingPart
