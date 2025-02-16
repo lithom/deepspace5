@@ -1,13 +1,71 @@
 import random
 
+import h5py
+import pickle
 import torch
 from rdkit import Chem
 from torch.utils.data import Dataset, DataLoader
 
+import numpy as np
 import multiprocessing as mp
 
 from deepspace5.datagenerator.dataset_generator import generate_conformers_and_compute_statistics
 from deepspace6.configs.ds_constants import DeepSpaceConstants
+
+
+
+
+class HDF5Dataset(Dataset):
+    def __init__(self, base_dataset, hdf5_path="dataset.h5", mode="w"):
+        """
+        Stores a dataset on disk in an HDF5 file.
+
+        Args:
+            base_dataset (Dataset): The dataset to be stored.
+            hdf5_path (str): Path to the HDF5 file.
+            mode (str): File mode, "w" (overwrite), "a" (append), "r" (read).
+        """
+        self.hdf5_path = hdf5_path
+        self.mode = mode
+
+        if mode in ["w", "a"]:
+            with h5py.File(hdf5_path, mode) as f:
+                for i in range(len(base_dataset)):
+                    if i % 100 == 0:
+                        print(f"Processing {i} / {len(base_dataset)}")
+
+                    try:
+                        element = base_dataset[i]
+                        # Handle different data types
+                        if isinstance(element, torch.Tensor):
+                            element = element.numpy()  # Convert to NumPy for HDF5 storage
+                        if isinstance(element, np.ndarray):
+                            f.create_dataset(f"data_{i}", data=element)
+                        else:
+                            # Convert any other Python object to bytes
+                            f.create_dataset(f"data_{i}", data=np.void(pickle.dumps(element)))
+                    except Exception as e:
+                        print(f"Error at index {i}: {e}")
+
+        # Get the dataset length from stored keys
+        with h5py.File(hdf5_path, "r") as f:
+            self.length = len(f.keys())
+
+    def __getitem__(self, idx):
+        """Load the item from HDF5 storage."""
+        with h5py.File(self.hdf5_path, "r") as f:
+            data = f[f"data_{idx}"][()]
+            if isinstance(data, np.void):  # If stored as pickled bytes, deserialize
+                data = pickle.loads(data.tobytes())
+            elif isinstance(data, np.ndarray):
+                data = torch.tensor(data)  # Convert back to PyTorch if needed
+            return data
+
+    def __len__(self):
+        """Return the number of elements in the dataset."""
+        return self.length
+
+
 
 
 class InMemoryDataset(Dataset):
@@ -303,6 +361,7 @@ class MoleculeDataset(Dataset):
         combined_bond_mask = bond_masks[0]  # Assuming all bond masks are identical
 
         return {
+            "global_index": idx,
             "atom_data": combined_atom_data,
             "atom_mask": atom_masks,
             "atom_metadata": atom_metadata,

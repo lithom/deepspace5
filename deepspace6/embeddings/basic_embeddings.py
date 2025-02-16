@@ -43,7 +43,7 @@ class DSAbstractEmbeddingPart(ABC):
         return math.prod( self.tensor_size()[1:])
 
     @abstractmethod
-    def eval_loss(self, target, output, mask):
+    def eval_loss(self, target, output, mask, lightning_module=None, is_val=False, global_index=None):
         """
         Evaluate the loss for this embedding part.
         :param target: Target tensor of shape (batch_size, N, MAX_ATOMS)

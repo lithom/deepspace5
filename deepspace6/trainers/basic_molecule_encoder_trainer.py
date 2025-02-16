@@ -94,7 +94,7 @@ class MoleculeEncoderTrainer:
         model.to(device)
 
         dataloader = DataLoader(dataset, batch_size=self.train_config.BATCH_SIZE, shuffle=True)
-        dataloader_val = DataLoader(dataset, batch_size=self.train_config.BATCH_SIZE, shuffle=True)
+        dataloader_val = DataLoader(dataset_val, batch_size=self.train_config.BATCH_SIZE, shuffle=True)
 
         atom_parts = dataset_helper.atom_embedding_parts
         bond_parts = dataset_helper.bond_embedding_parts
